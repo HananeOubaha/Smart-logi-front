@@ -36,15 +36,15 @@ for ($i = 1; $i -le 100; $i++) {
     # Sélectionner un message de commit aléatoire
     $message = $commitMessages | Get-Random
 
-    # Modifier un fichier aléatoire
-    $file = Get-ChildItem -Path $projectPath -Recurse -File | Get-Random
-    Add-Content -Path $file.FullName -Value "# Modification $i - $message"
+    # Ajouter tous les fichiers modifiés et non suivis
+    git add -A
 
-    # Ajouter et valider les modifications
-    git add $file.FullName
+    # Définir la date du commit
     $commitDate = $currentDate.AddDays($interval * ($i - 1))
     $env:GIT_COMMITTER_DATE = $commitDate.ToString("yyyy-MM-ddTHH:mm:ss")
     $env:GIT_AUTHOR_DATE = $commitDate.ToString("yyyy-MM-ddTHH:mm:ss")
+
+    # Créer le commit
     git commit -m "$message"
 }
 

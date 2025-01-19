@@ -1,20 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Dashboard } from './dashboard';
+import { DashboardComponent } from './dashboard'; // 1. Smiya s7i7a
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideRouter } from '@angular/router';
 
 describe('Dashboard', () => {
-  let component: Dashboard;
-  let fixture: ComponentFixture<Dashboard>;
+  let component: DashboardComponent;
+  let fixture: ComponentFixture<DashboardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Dashboard]
+      imports: [DashboardComponent], // 2. Importina l'component s7i7
+      providers: [
+        // 3. Darouri n-fourniw hado hit l'component fih Constructor kbir
+        provideHttpClient(),        // Bach y-qder y-dir requetes Http
+        provideHttpClientTesting(), // Mock dyal Http lil-test
+        provideRouter([])           // Bach y-khdem Router
+      ]
     })
-    .compileComponents();
+      .compileComponents();
 
-    fixture = TestBed.createComponent(Dashboard);
+    fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges(); // 4. Lance ngOnInit
   });
 
   it('should create', () => {

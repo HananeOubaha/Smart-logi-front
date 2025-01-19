@@ -1,0 +1,50 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary"><i class="bi bi-map me-2"></i>Gestion des Zones</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 mb-4 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">Ajouter une Zone</h5>
+                    <form (ngSubmit)="addZone()">
+                        <div class="mb-3">
+                            <input type="text" [(ngModel)]="newZone.nom" name="nom" class="form-control"
+                                placeholder="Nom de la zone (ex: Casablanca)" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Ajouter</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="bg-primary text-white">
+                            <tr>
+                                <th class="ps-3">ID</th>
+                                <th>Nom de la Zone</th>
+                                <th class="text-end pe-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let z of zones">
+                                <td class="ps-3">#{{ z.id }}</td>
+                                <td>{{ z.nom }}</td>
+                                <td class="text-end pe-3">
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
+                            <tr *ngIf="zones.length === 0">
+                                <td colspan="3" class="text-center py-4">Aucune zone configurée.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
