@@ -1,0 +1,48 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center py-3">
+          <h3 class="mb-0"><i class="bi bi-search"></i> Suivre mon Colis</h3>
+        </div>
+        <div class="card-body p-4">
+          <p class="text-muted text-center mb-4">Consultez l'état de votre livraison en temps réel.</p>
+
+          <div class="input-group mb-4">
+            <input type="text" [(ngModel)]="colisId" class="form-control form-control-lg"
+                   placeholder="Entrez l'ID du colis (ex: 123)">
+            <button class="btn btn-primary" type="button" (click)="rechercher()">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+
+          <div *ngIf="colisData" class="result-box animate__animated animate__fadeIn">
+            <div class="alert alert-info border-0 shadow-sm">
+              <h5 class="alert-heading border-bottom pb-2 mb-3">Informations du Colis</h5>
+              <div class="mb-2">
+                <strong><i class="bi bi-info-circle"></i> Statut :</strong>
+                <span class="badge bg-success ms-2 p-2">{{colisData.statut}}</span>
+              </div>
+              <div class="mb-2">
+                <strong><i class="bi bi-geo-alt"></i> Destination :</strong>
+                <span class="ms-2 text-dark">{{colisData.villeDestination}}</span>
+              </div>
+              <div class="mb-0">
+                <strong><i class="bi bi-card-text"></i> Description :</strong>
+                <span class="ms-2 text-dark">{{colisData.description}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="errorMsg" class="alert alert-danger mt-3 d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div>{{errorMsg}}</div>
+          </div>
+        </div>
+        <div class="card-footer text-center text-muted small py-3">
+          SmartLogi SDMS &copy; 2026 - Livraison sécurisée
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
