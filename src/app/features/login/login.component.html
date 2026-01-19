@@ -5,11 +5,11 @@
 
       <form (ngSubmit)="onLogin()">
         <div class="mb-3">
-          <label class="form-label text-muted">Nom d'utilisateur</label>
+          <label class="form-label text-muted">Nom d'utilisateur ou Email</label>
           <div class="input-group">
             <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
             <input type="text" [(ngModel)]="credentials.username" name="username"
-                   class="form-control border-start-0 bg-light" placeholder="Entrez votre username" required>
+              class="form-control border-start-0 bg-light" placeholder="Entrez votre username ou email" required>
           </div>
         </div>
 
@@ -18,7 +18,7 @@
           <div class="input-group">
             <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
             <input type="password" [(ngModel)]="credentials.password" name="password"
-                   class="form-control border-start-0 bg-light" placeholder="••••••••" required>
+              class="form-control border-start-0 bg-light" placeholder="••••••••" required>
           </div>
         </div>
 
@@ -32,8 +32,13 @@
         </button>
       </form>
     </div>
-    <div class="text-center mt-3">
+    <div class="text-center mt-3 d-flex flex-column gap-1">
       <a routerLink="/suivi" class="text-decoration-none small text-muted">Retour au suivi public</a>
+      <div class="small text-muted mt-2">
+        Pas encore de compte ? <a routerLink="/register"
+          class="fw-bold text-primary text-decoration-none">S'inscrire</a>
+      </div>
     </div>
+
   </div>
 </div>

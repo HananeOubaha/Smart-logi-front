@@ -6,8 +6,8 @@ $projectPath = "C:\Users\safiy\Desktop\SmartLogiSdms-Front"
 # Se déplacer dans le répertoire du projet
 Set-Location -Path $projectPath
 
-# Dates de début et de fin
-$startDate = Get-Date -Year 2025 -Month 1 -Day 19
+# Mise à jour des dates de début et de fin pour 2026
+$startDate = Get-Date -Year 2026 -Month 1 -Day 19
 $endDate = Get-Date -Year 2026 -Month 2 -Day 3
 
 # Calculer l'intervalle de temps entre les commits
@@ -36,15 +36,15 @@ for ($i = 1; $i -le 100; $i++) {
     # Sélectionner un message de commit aléatoire
     $message = $commitMessages | Get-Random
 
-    # Modifier un fichier aléatoire
-    $file = Get-ChildItem -Path $projectPath -Recurse -File | Get-Random
-    Add-Content -Path $file.FullName -Value "# Modification $i - $message"
+    # Ajouter tous les fichiers modifiés et non suivis
+    git add -A
 
-    # Ajouter et valider les modifications
-    git add $file.FullName
+    # Définir la date du commit
     $commitDate = $currentDate.AddDays($interval * ($i - 1))
     $env:GIT_COMMITTER_DATE = $commitDate.ToString("yyyy-MM-ddTHH:mm:ss")
     $env:GIT_AUTHOR_DATE = $commitDate.ToString("yyyy-MM-ddTHH:mm:ss")
+
+    # Créer le commit
     git commit -m "$message"
 }
 
