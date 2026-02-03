@@ -9,7 +9,7 @@ import { LoginRequest } from '../../core/models/auth.models';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule], // Darouri lil-formulaire
-  templateUrl: './login.html'
+  templateUrl: './login.component.html'
 })
 export class LoginComponent {
   // L'objet li gha-i-3mmer l'user
@@ -21,7 +21,7 @@ export class LoginComponent {
   errorMessage: string = '';
   isLoading: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   onLogin() {
     this.isLoading = true;
@@ -35,8 +35,14 @@ export class LoginComponent {
       error: (err) => {
         this.isLoading = false;
         this.errorMessage = 'Identifiants incorrects ou erreur serveur.';
-        console.error(err);
+        console.error("❌ Détails de l'erreur de connexion:", err);
+        if (err.status === 0) {
+          this.errorMessage = "Le serveur est injoignable. Vérifiez qu'il est bien démarré.";
+        } else if (err.status === 401) {
+          this.errorMessage = "Email/Username ou Mot de passe incorrect.";
+        }
       }
+
     });
   }
 }

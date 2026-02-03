@@ -1,0 +1,138 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
+  <a class="navbar-brand fw-bold" href="#">SmartLogi <span class="text-primary">SDMS</span></a>
+  <div class="ms-auto">
+    <button class="btn btn-outline-light btn-sm" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i> Déconnexion
+    </button>
+  </div>
+</nav>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="text-primary fw-bold mb-0">📦 Dashboard <small class="text-muted fs-6">({{ userRole }})</small></h2>
+      <p class="text-muted small">Gérez et suivez vos colis en temps réel</p>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <button *ngIf="userRole === 'ROLE_CLIENT'" class="btn btn-primary shadow-sm px-4" routerLink="/nouveau-colis">
+        <i class="bi bi-plus-circle me-2"></i>Nouveau Colis
+      </button>
+      <button class="btn btn-light border shadow-sm" (click)="ngOnInit()">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Section Filtres -->
+  <div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body py-3">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control border-start-0" placeholder="Rechercher par description ou ville..."
+              [(ngModel)]="filterSearch" (input)="applyFilters()">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="filterStatus" (change)="applyFilters()">
+            <option value="">Tous les statuts</option>
+            <option value="CREE">CRÉÉ</option>
+            <option value="EN_TRANSIT">EN TRANSIT</option>
+            <option value="LIVRE">LIVRÉ</option>
+            <option value="ANNULE">ANNULÉ</option>
+          </select>
+        </div>
+        <div class="col-col-md-4 text-end">
+          <span class="badge bg-white text-dark border p-2">{{ filteredColis.length }} résultat(s)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Récupération des colis...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger shadow-sm d-flex align-items-center">
+    <i class="bi bi-exclamation-circle-fill fs-4 me-3"></i>
+    <div>{{ errorMessage }}</div>
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="card shadow border-0 overflow-hidden" style="border-radius: 12px;">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead [class]="userRole === 'ROLE_MANAGER' ? 'bg-dark text-white' : 'bg-primary text-white'">
+            <tr>
+              <th class="ps-4"># ID</th>
+              <th>Description</th>
+              <th>Destination</th>
+              <th>Poids</th>
+              <th>Statut</th>
+              <th class="text-end pe-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let colis of filteredColis" class="animate-in">
+              <td class="ps-4 fw-bold text-dark">#{{ colis.id }}</td>
+              <td>
+                <div class="fw-medium">{{ colis.description }}</div>
+              </td>
+              <td>
+                <span class="badge rounded-pill bg-light text-dark border">
+                  <i class="bi bi-geo-alt text-danger me-1"></i>{{ colis.villeDestination }}
+                </span>
+              </td>
+              <td><span class="text-muted">{{ colis.poids }} kg</span></td>
+              <td>
+                <span [class]="getStatusBadge(colis.statut) + ' px-3 py-2 rounded-pill shadow-sm'">
+                  {{ colis.statut }}
+                </span>
+              </td>
+              <td class="text-end pe-4">
+                <div class="btn-group shadow-sm">
+                  <button class="btn btn-sm btn-white border" title="Détails" [routerLink]="['/colis', colis.id]">
+                    <i class="bi bi-eye text-primary"></i>
+                  </button>
+
+                  <!-- Actions Spécifiques au Manager -->
+                  <button *ngIf="userRole === 'ROLE_MANAGER'" class="btn btn-sm btn-white border"
+                    (click)="deleteColis(colis.id)" title="Supprimer">
+                    <i class="bi bi-trash text-danger"></i>
+                  </button>
+
+                  <!-- Actions Spécifiques au Livreur -->
+                  <button *ngIf="userRole === 'ROLE_DELIVERYMAN'" class="btn btn-sm btn-white border"
+                    (click)="updateStatus(colis.id)" title="Mettre à jour statut">
+                    <i class="bi bi-pencil-square text-success"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- State Empty Personnel pour le Client -->
+            <tr *ngIf="filteredColis.length === 0 && userRole === 'ROLE_CLIENT'">
+              <td colspan="6" class="text-center py-5">
+                <div class="text-muted mb-3"><i class="bi bi-box-seam fs-1"></i></div>
+                <h5 class="text-dark">Vous n'avez pas encore de colis</h5>
+                <p class="text-muted">Commencez par créer votre premier envoi !</p>
+                <button class="btn btn-primary px-4 mt-2" routerLink="/nouveau-colis">Créer un colis</button>
+              </td>
+            </tr>
+
+            <!-- State Empty pour le Manager -->
+            <tr *ngIf="filteredColis.length === 0 && userRole !== 'ROLE_CLIENT'">
+              <td colspan="6" class="text-center py-5">
+                <div class="text-muted mb-2"><i class="bi bi-inbox fs-1"></i></div>
+                <p class="mb-0">Aucun colis ne correspond à vos critères de recherche.</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
